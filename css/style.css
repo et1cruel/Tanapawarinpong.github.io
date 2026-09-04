@@ -453,6 +453,43 @@ section.is-visible h2::after { width: 100%; }
 @keyframes pulseDot { 0%,100%{ box-shadow: 0 0 0 4px rgba(129,199,132,0.25)} 50%{ box-shadow: 0 0 0 8px rgba(129,199,132,0)} }
 .rig-banner-glow { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent); transform: translateX(-100%); animation: shimmerSweep 3s ease-in-out infinite; pointer-events: none; }
 
+/* ========== Hobbies ========== */
+.hobbies-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+}
+.hobby-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f6fdf7 100%);
+    border: 1px solid #c8e6c9; border-radius: 16px; padding: 22px 18px;
+    position: relative; overflow: hidden; isolation: isolate;
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), box-shadow 0.32s, border-color 0.32s;
+    text-align: center;
+}
+.hobby-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(76,175,80,0.09) 0%, transparent 55%),
+                linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%);
+    transform: translateX(-100%); transition: transform 0.7s, opacity 0.3s;
+}
+.hobby-card:hover::before { transform: translateX(100%); opacity: 1; }
+.hobby-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 14px 28px rgba(37,91,55,0.13); border-color: #a5d6a7; }
+.hobby-icon {
+    width: 56px; height: 56px; display: grid; place-items: center; margin: 0 auto 14px;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 1px solid #a5d6a7;
+    border-radius: 16px; font-size: 1.55rem;
+    box-shadow: 0 4px 14px rgba(37,91,55,0.10);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+}
+.hobby-card:hover .hobby-icon { transform: rotate(-8deg) scale(1.12); background: linear-gradient(135deg, #1a5c2a, #4caf50); color: #fff; border-color: transparent; }
+.hobby-card h3 { color: #1a5c2a; font-size: 1.02rem; font-weight: 800; margin-bottom: 8px; }
+.hobby-card p { font-size: 0.85rem; color: #5a7d5e; line-height: 1.6; min-height: 52px; }
+.hobby-tag {
+    display: inline-block; margin-top: 12px; background: #e8f5e9; color: #2e7d32;
+    padding: 5px 12px; border-radius: 20px; font-size: 0.70rem; font-weight: 700; letter-spacing: 0.03em;
+    border: 1px solid #c8e6c9; transition: background 0.3s, color 0.3s;
+}
+.hobby-card:hover .hobby-tag { background: #1a5c2a; color: #fff; border-color: #1a5c2a; }
+
 /* ========== Projects ========== */
 .projects-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
