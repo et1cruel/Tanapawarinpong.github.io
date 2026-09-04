@@ -217,35 +217,103 @@ if (dlBtn) {
     });
 }
 
-// ===== Age auto-calculation — Birthday 17/12/2547 BE (17 Dec 2004 CE) =====
+// ===== Birthday Card — colourful animated (17/12/2547 BE = 17 Dec 2004) =====
 (function() {
-    // 2547 BE = 2004 CE (BE - 543 = CE)
-    const birthDate = new Date(2004, 11, 17); // month 11 = December
+    const birthDate = new Date(2004, 11, 17);
+    const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
     function calcAge(birth) {
         const today = new Date();
         let age = today.getFullYear() - birth.getFullYear();
-        const hasHadBirthday = today.getMonth() > birth.getMonth() ||
-            (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
-        if (!hasHadBirthday) age--;
+        const hasHad = today.getMonth() > birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
+        if (!hasHad) age--;
         return age;
     }
-    function updateAge() {
+    function animateCount(el, target) {
+        let cur = 0;
+        const step = Math.max(1, Math.ceil(target / 28));
+        const timer = setInterval(() => {
+            cur = Math.min(cur + step, target);
+            el.textContent = cur;
+            el.style.transform = 'scale(1.15)';
+            setTimeout(() => el.style.transform = '', 120);
+            if (cur >= target) clearInterval(timer);
+        }, 42);
+    }
+    function updateBirthday() {
+        const today = new Date();
         const age = calcAge(birthDate);
-        const el = document.getElementById('ageDisplay');
-        if (el) el.textContent = age;
+        const ageEl = document.getElementById('ageDisplay');
+        if (ageEl) {
+            // count-up animation when card enters view
+            const card = document.getElementById('birthdayCard');
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    animateCount(ageEl, age);
+                    observer.disconnect();
+                }
+            }, { threshold: 0.5 });
+            if (card) observer.observe(card); else animateCount(ageEl, age);
+        }
+        // weekday badge
+        const wdEl = document.getElementById('weekdayBadge');
+        if (wdEl) wdEl.textContent = weekdays[birthDate.getDay()] + ' • Born';
+
+        // countdown + progress through current age year
+        const lastBday = new Date(today.getFullYear(), 11, 17);
+        if (today < lastBday) lastBday.setFullYear(today.getFullYear() - 1);
+        const nextBday = new Date(lastBday); nextBday.setFullYear(lastBday.getFullYear() + 1);
+        const totalMs = nextBday - lastBday;
+        const elapsedMs = today - lastBday;
+        const progress = Math.min(100, Math.max(0, (elapsedMs / totalMs) * 100));
+
+        const progressEl = document.getElementById('birthdayProgress');
+        if (progressEl) requestAnimationFrame(() => progressEl.style.width = progress.toFixed(1) + '%');
+
+        const diffDays = Math.ceil((nextBday - today) / 86400000);
         const detail = document.getElementById('ageDetail');
+        const nextTxt = document.getElementById('nextBirthdayText');
         if (detail) {
-            const today = new Date();
-            const nextBday = new Date(today.getFullYear(), 11, 17);
-            if (today > nextBday) nextBday.setFullYear(today.getFullYear() + 1);
-            const diffDays = Math.ceil((nextBday - today) / (1000 * 60 * 60 * 24));
-            // Don't show countdown on birthday itself
-            if (diffDays !== 0 && diffDays !== 365 && diffDays !== 366) {
-                detail.textContent = `· next birthday in ${diffDays} days`;
+            if (diffDays === 0) {
+                detail.textContent = '🎉 Happy Birthday! Today is your day! 🎉';
+                detail.style.fontSize = '1rem';
+                // confetti burst
+                document.getElementById('birthdayCard')?.classList.add('is-birthday');
+            } else if (diffDays === 1) {
+                detail.textContent = '⏳ 1 day until your birthday!';
+            } else {
+                detail.textContent = `⏳ ${diffDays} days until next birthday — ${nextBday.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}`;
             }
         }
+        if (nextTxt) {
+            if (diffDays === 0) nextTxt.textContent = 'Turning ' + (age+1) + ' 🎈';
+            else nextTxt.textContent = `Turning ${age+1} in ${diffDays} days`;
+        }
+        // days alive
+        const daysAliveEl = document.getElementById('daysAlive');
+        if (daysAliveEl) {
+            const daysAlive = Math.floor((today - birthDate) / 86400000);
+            daysAliveEl.textContent = `✨ ${daysAlive.toLocaleString()} days alive • ${Math.floor(daysAlive/365)} years of stories`;
+        }
+        // seasonal confetti intensity when close to birthday
+        if (diffDays <= 7 && diffDays > 0) {
+            const card = document.getElementById('birthdayCard');
+            if (card) card.style.boxShadow = '0 16px 40px rgba(26,92,42,0.32), 0 0 24px rgba(255,213,79,0.35)';
+        }
     }
-    updateAge();
+    updateBirthday();
+
+    // subtle tilt on mouse move
+    const card = document.getElementById('birthdayCard');
+    if (card) {
+        card.addEventListener('mousemove', (e) => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left)/r.width - 0.5;
+            const y = (e.clientY - r.top)/r.height - 0.5;
+            card.style.transform = `perspective(800px) rotateX(${y*-4}deg) rotateY(${x*6}deg) translateY(-4px)`;
+        });
+        card.addEventListener('mouseleave', () => card.style.transform = '');
+    }
 })();
 
 // ===== Respect prefers-reduced-motion =====
