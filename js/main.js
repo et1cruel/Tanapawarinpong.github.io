@@ -317,6 +317,26 @@ if (dlBtn) {
 })();
 
 // ===== Respect prefers-reduced-motion =====
+// ===== Rig bars animation =====
+(() => {
+    const rigFills = document.querySelectorAll('.rig-bar-fill');
+    rigFills.forEach(el => {
+        const w = el.style.width;
+        el.style.width = '0%';
+        el.dataset.target = w;
+    });
+    const rigObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
+                requestAnimationFrame(() => e.target.style.width = e.target.dataset.target);
+                rigObserver.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.4 });
+    rigFills.forEach(el => rigObserver.observe(el));
+})();
+
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
 }

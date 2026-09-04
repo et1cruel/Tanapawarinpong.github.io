@@ -400,6 +400,59 @@ section.is-visible h2::after { width: 100%; }
 .skill-bar-fill.is-animated::after { animation-play-state: running; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
+/* ========== Setup / Rig ========== */
+.rig-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+.rig-card {
+    background: linear-gradient(135deg, #f9fdf9 0%, #f0f9f1 100%);
+    border: 1px solid #c8e6c9; border-radius: 16px; padding: 20px 18px;
+    position: relative; overflow: hidden; isolation: isolate;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s, border-color 0.3s;
+}
+.rig-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0;
+    background: radial-gradient(circle at 30% 15%, rgba(76,175,80,0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 70%, rgba(255,213,79,0.10) 0%, transparent 30%);
+    transition: opacity 0.3s;
+}
+.rig-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 14px 28px rgba(37,91,55,0.13); border-color: #a5d6a7; }
+.rig-card:hover::before { opacity: 1; }
+.rig-icon {
+    width: 44px; height: 44px; display: grid; place-items: center;
+    background: linear-gradient(135deg, #1a5c2a, #4caf50); color: #fff; font-size: 1.35rem;
+    border-radius: 12px; box-shadow: 0 4px 14px rgba(26,92,42,0.22); margin-bottom: 12px;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.rig-card:hover .rig-icon { transform: rotate(-8deg) scale(1.12); }
+.rig-card h3 { color: #1a5c2a; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.rig-spec { font-size: 1.05rem; font-weight: 800; color: #1a3c1a; line-height: 1.2; }
+.rig-card p { font-size: 0.82rem; color: #5a7d5e; margin-top: 6px; line-height: 1.5; }
+.rig-bar { height: 6px; background: #d9f2d1; border-radius: 10px; overflow: hidden; margin-top: 12px; }
+.rig-bar-fill { height: 100%; background: linear-gradient(90deg, #1a5c2a, #4caf50, #81c784); border-radius: 10px; position: relative; overflow: hidden; }
+.rig-bar-fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: translateX(-100%); animation: shimmer 1.8s ease-in-out infinite;
+}
+.rig-tag {
+    display: inline-block; margin-top: 10px; background: #e8f5e9; color: #2e7d32;
+    padding: 4px 10px; border-radius: 20px; font-size: 0.70rem; font-weight: 700; letter-spacing: 0.04em;
+}
+.rig-gpu .rig-icon { background: linear-gradient(135deg, #0d2818, #2e7d32); }
+.rig-cpu .rig-icon { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+.rig-ram .rig-icon { background: linear-gradient(135deg, #6a1b9a, #ab47bc); }
+.rig-ssd .rig-icon { background: linear-gradient(135deg, #e65100, #ffb74d); }
+.rig-banner {
+    margin-top: 20px; display: flex; align-items: center; gap: 12px; justify-content: center;
+    background: linear-gradient(90deg, #1a5c2a, #2e7d32); color: #fff; padding: 12px 18px; border-radius: 12px;
+    font-size: 0.88rem; position: relative; overflow: hidden; box-shadow: 0 6px 18px rgba(26,92,42,0.22);
+}
+.rig-banner-dot { width: 8px; height: 8px; background: #81c784; border-radius: 50%; box-shadow: 0 0 0 4px rgba(129,199,132,0.25); animation: pulseDot 2s ease infinite; flex-shrink: 0; }
+@keyframes pulseDot { 0%,100%{ box-shadow: 0 0 0 4px rgba(129,199,132,0.25)} 50%{ box-shadow: 0 0 0 8px rgba(129,199,132,0)} }
+.rig-banner-glow { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent); transform: translateX(-100%); animation: shimmerSweep 3s ease-in-out infinite; pointer-events: none; }
+
 /* ========== Projects ========== */
 .projects-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
